@@ -1,0 +1,20 @@
+FROM node:10-slim
+
+RUN apt-get update || : && apt-get -y install bluetooth bluez libbluetooth-dev libudev-dev build-essential make python
+
+#Debug
+RUN apt-get -y install sudo bluez-hcidump
+
+WORKDIR /app/
+
+COPY package*.json ./
+
+RUN npm install --production
+
+COPY app.js ./
+
+EXPOSE 9229
+
+USER root
+
+CMD ["node", "--inspect=0.0.0.0:9229", "app.js"]
